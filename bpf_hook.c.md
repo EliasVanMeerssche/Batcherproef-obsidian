@@ -1,0 +1,2 @@
+Dit is een module die gebruikt wordt door Singularity om bepaalde functionaliteiten aan de rootkit toe te voegen. Ook heeft het iets gemaken met **ftrace-hooking**. Het maakt ook gebruik van XDP om op 8081 een [[Command and Control]] op te zetten naar een andere server. Doordat het gebruikt maakt van [[XDP]] kan het al het verkeep droppen waardoor je het niet kunt zien.
+Het plaatst ook hooks op bepaalde kanelen die gebruikt worden door [[eBPF]] om data te sturen naar rootkit detectie software zoals Falco. 

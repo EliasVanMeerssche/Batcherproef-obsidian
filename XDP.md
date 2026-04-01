@@ -1,0 +1,2 @@
+eXpress Data Path
+Dit runt op het laagste punt van de netwerk stack wat ervoor zorgt dat het de mogelijk heeft om elk netwerk verkeer te verbergen van de gebruiker. Dit kan gebruikt worden om C2 ([[Command and Control]]) verkeer te verbergen van de gebruiker. XDP runt voor de firewall wat het extra kansen heeft om aan te vallen. 
