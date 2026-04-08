@@ -1,0 +1,1 @@
+Deze plaatst een hook op het "fork" mechanisme (`tp_sched_fork`). Als jouw verborgen C2-proces een nieuw subproces (child) start om een commando uit te voeren, wordt dat nieuwe proces dankzij deze module óók direct onzichtbaar gemaakt.

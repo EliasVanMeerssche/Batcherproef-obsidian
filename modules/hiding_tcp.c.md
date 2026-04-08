@@ -1,0 +1,1 @@
+Dit is de enige module die je nodig hebt voor het verbergen van de netwerklaag. Het plaatst hooks op functies zoals `tcp4_seq_show`, `tpacket_rcv` en Netlink-diagnostiek. Hierdoor worden jouw specifieke IP-adres en poort (standaard 8081 in deze code) onzichtbaar gemaakt voor netwerktools zoals `netstat`, `ss` en packet sniffers.

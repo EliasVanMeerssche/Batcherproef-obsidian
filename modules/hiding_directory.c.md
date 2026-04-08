@@ -1,0 +1,1 @@
+Extreem belangrijk. Deze module kaapt de `getdents` en `getdents64` system calls. Dit filtert jouw verborgen bestanden en mappen uit de resultaten van commando's zoals `ls`. Bovendien zorgt dit ervoor dat mappen met verborgen PIDs (bijv. `/proc/1234`) onzichtbaar zijn voor monitoringstools zoals `ps` of `top`.

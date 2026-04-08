@@ -1,0 +1,1 @@
+Als een tool niet zoekt via `ls`, maar direct de status van een bestand opvraagt (via `stat` of `lstat`), blokkeert deze module dat door te doen alsof het bestand niet bestaat (`-ENOENT`). Het past tevens de "link counts" van mappen aan, een geavanceerde truc om forensische analyse te slim af te zijn.

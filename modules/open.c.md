@@ -1,0 +1,1 @@
+Zelfs als een map onzichtbaar is, zou een detectietool direct bestanden binnen een `/proc/<pid>/` pad kunnen proberen te openen. Deze module plaatst hooks op `openat`, `access`, etc. en weigert de toegang tot processen die op de verborgen lijst staan.

@@ -1,0 +1,3 @@
+"Hooking" is een algemene term in de informatica voor het onderscheppen van softwareaanroepen (functieaanroepen, berichten of events) tussen softwarecomponenten.
+
+In de context van een rootkit betekent dit dat de malware de controle overneemt op het moment dat een normale gebruiker of een programma een vraag stelt aan het besturingssysteem. Als een functie [[notrace]] heeft, betekent dat dat hooking niet mogelijk is.

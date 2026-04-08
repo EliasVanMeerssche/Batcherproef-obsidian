@@ -1,0 +1,1 @@
+Verwijdert de rootkit zélf (jouw kernel module) uit de lijst met geladen modules (`lsmod` / `/proc/modules`) en sysfs. Als je deze vergeet, is je malware en je C2 verborgen, maar ziet de beheerder wel een vreemde kernelmodule draaien.

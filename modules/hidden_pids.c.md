@@ -1,0 +1,1 @@
+Dit is een vereiste afhankelijkheid. Deze module hookt zelf niets, maar bevat de lijsten (`hidden_pids` en `child_pids`) en de logica om in het geheugen bij te houden wélke PIDs (Process IDs) precies verborgen moeten worden. Zonder dit bestand weten de andere modules niet wat ze moeten verbergen.

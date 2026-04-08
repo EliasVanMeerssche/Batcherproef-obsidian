@@ -1,6 +1,6 @@
 {
-  "collapse-filter": true,
-  "search": "",
+  "collapse-filter": false,
+  "search": "-file:README -file:.c",
   "showTags": false,
   "showAttachments": false,
   "hideUnresolved": false,
@@ -25,6 +25,6 @@
   "repelStrength": 10,
   "linkStrength": 1,
   "linkDistance": 250,
-  "scale": 1,
+  "scale": 0.9333280666757886,
   "close": true
 }

@@ -13,12 +13,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "Text.md",
+                "file": "README.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "Text"
+              "title": "README"
             }
           }
         ]
@@ -185,13 +185,29 @@
   },
   "active": "8cfcf89c3ca459e2",
   "lastOpenFiles": [
-    "Uprobes and PAM.md",
-    "XDP.md",
-    "bpf_hook.c.md",
+    "Main.md",
+    "notrace.md",
     "Detectie van LKM en EBPF.md",
     "eBPF.md",
+    "ftrace.md",
+    "ftrace-hooking.md",
+    "hooks.md",
+    "Kprobes.md",
+    "README.md",
+    "XDP.md",
+    "Uprobes.md",
+    "Singularity.md",
+    "modules/hide_module.c.md",
+    "modules/hiding_directory.c.md",
+    "modules/hiding_stat.c.md",
+    "modules/hiding_tcp.c.md",
+    "modules/open.c.md",
+    "modules/trace.c.md",
+    "modules/hidden_pids.c.md",
+    "modules/bpf_hook.c.md",
     "LKM.md",
-    "Text.md",
+    "modules",
+    "Untitled.canvas",
     "test/sys_call_table.md",
     "test/Ftrace.md",
     "test"
