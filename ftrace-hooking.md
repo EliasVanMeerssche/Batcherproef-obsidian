@@ -1,4 +1,4 @@
-Deze rootkit (Singularity) misbruikt het [[ftrace]]-raamwerk om zijn [[hooks]] te plaatsen. In plaats van ftrace te gebruiken om alleen maar een logboek bij te houden, gebruikt de rootkit ftrace om de uitvoering van de code te **kapen en om te leiden**.
+Deze rootkit ([[Singularity]]) misbruikt het [[ftrace]]-raamwerk om zijn [[hooks]] te plaatsen. In plaats van ftrace te gebruiken om alleen maar een logboek bij te houden, gebruikt de rootkit ftrace om de uitvoering van de code te **kapen en om te leiden**. Hiervoor gebruikt het een [[LKM]]
 
 Dit is hoe het stap-voor-stap werkt in de code die je hebt gedeeld:
 

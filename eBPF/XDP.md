@@ -1,0 +1,2 @@
+eXpress Data Path
+Dit draait op het laagste punt van de netwerkstack, waardoor het de mogelijkheid heeft om elk netwerkverkeer voor de gebruiker te verbergen. Dit kan gebruikt worden om C2 ([[Command and Control]])-verkeer voor de gebruiker te verbergen. XDP draait vóór de firewall, wat extra aanvalskansen kan geven. Dit kan gebruikt worden via een [[eBPF]]
