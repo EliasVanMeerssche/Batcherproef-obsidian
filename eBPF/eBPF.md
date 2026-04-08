@@ -1,7 +1,5 @@
-extended Berkeley Packet Filter
-de C-code wordt gecompileerd naar eBPF-bytecode
-Dit wordt ingeladen door de bpf() syscall  
-
+Extended Berkeley Packet Filter, dit is een nieuwe manier om kleine, veilige programma's binnen de Linux-kernel uit te voeren zonder de broncode van de kernel aan te moeten passen. Het haakt in op een netwerkpakket ([[XDP]]) of systeemoproep (kprobes). Dit is anders dan een [[LKM]], die getoond worden in /proc/modules.
+Studenten moeten ook zoeken naar eBPF-hooksporen, wat minder eenvoudig is (`bpftool`). Ook hoe de grens tussen userland en kernel space wordt overschreden.
 
 Het is gemaakt om [[LKM]] te vervangen; als je een fout schrijft, gaat de kernel in “Kernel Panic”. eBPF geeft een sandbox environment waarin wordt gecontroleerd of de code geen loops bevat of crasht.
 
