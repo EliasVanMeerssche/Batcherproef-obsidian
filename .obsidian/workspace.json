@@ -13,12 +13,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "eBPF/Mitigation van eBPF.md",
+                "file": "eBPF/Uprobes.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "Mitigation van eBPF"
+              "title": "Uprobes"
             }
           }
         ]
@@ -94,7 +94,7 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "eBPF/Mitigation van eBPF.md",
+                "file": "eBPF/Testen van Mitigation eBPF.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -104,7 +104,7 @@
                 "unlinkedCollapsed": true
               },
               "icon": "links-coming-in",
-              "title": "Backlinks for Mitigation van eBPF"
+              "title": "Backlinks for Testen van Mitigation eBPF"
             }
           },
           {
@@ -185,21 +185,22 @@
   },
   "active": "7e1229313ff36192",
   "lastOpenFiles": [
+    "eBPF/Testen van Mitigation eBPF.md",
+    "eBPF/eBPF.md",
+    "eBPF/Kprobes.md",
+    "eBPF/Uprobes.md",
+    "eBPF/XDP.md",
     "Falco.md",
     "eBPF/Mitigation van eBPF.md",
-    "eBPF/eBPF.md",
     "Main.md",
-    "notrace.md",
-    "LKM/LKM.md",
-    "hooks.md",
-    "LKM/ftrace-hooking.md",
-    "LKM",
-    "LKM/ftrace.md",
-    "LKM/Detectie van LKM.md",
-    "eBPF/Kprobes.md",
-    "eBPF/XDP.md",
-    "eBPF/Uprobes.md",
     "LKM/Singularity.md",
+    "LKM/LKM.md",
+    "LKM/ftrace-hooking.md",
+    "LKM/ftrace.md",
+    "hooks.md",
+    "notrace.md",
+    "LKM",
+    "LKM/Detectie van LKM.md",
     "README.md",
     "eBPF",
     "modules/hide_module.c.md",

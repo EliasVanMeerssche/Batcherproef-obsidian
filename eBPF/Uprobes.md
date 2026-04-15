@@ -1,3 +1,7 @@
-Uprobes (User-level Probes) hook functies binnen gedeelde libraries zoals libpam.so (de Linux Pluggable Authentication Module). 
+Uprobes (User-level Probes)
+Dit is een [[eBPF]]-meganisme waarmee het een bepaalde [[hooks]] kan plaatsen op bepaalde functie in [[userland]]. Dit zou dus gebruikt kunnen worden door een rootkit om bepaalde programma's hun functie aan te roepen en aan te passen. 
 
-Dit wordt gebruikt door [[eBPF]]
+
+eBPF Offensive Capabilities – Get Ready for Next-gen Malware | Sysdig
+ebpf_offensive_rootkit_tfg.pdf
+
