@@ -11,10 +11,14 @@
             "id": "7e1229313ff36192",
             "type": "leaf",
             "state": {
-              "type": "graph",
-              "state": {},
-              "icon": "lucide-git-fork",
-              "title": "Graph view"
+              "type": "markdown",
+              "state": {
+                "file": "eBPF/eBPF.md",
+                "mode": "source",
+                "source": false
+              },
+              "icon": "lucide-file",
+              "title": "eBPF"
             }
           }
         ]
@@ -181,24 +185,25 @@
   },
   "active": "7e1229313ff36192",
   "lastOpenFiles": [
-    "Uprobes.md",
-    "Kprobes.md",
     "eBPF/XDP.md",
-    "Tracepoints.md",
-    "eBPF/eBPF.md",
-    "eBPF/Testen van Mitigation eBPF.md",
+    "eBPF/TC (Traffic Control).md",
     "eBPF/Mitigation van eBPF.md",
+    "eBPF/Testen van Mitigation eBPF.md",
+    "LKM/ftrace.md",
+    "LKM/Detectie van LKM.md",
+    "eBPF/eBPF.md",
+    "Uprobes.md",
+    "Tracepoints.md",
+    "README.md",
+    "notrace.md",
+    "hooks.md",
     "Falco.md",
+    "Kprobes.md",
     "Main.md",
     "LKM/Singularity.md",
     "LKM/LKM.md",
     "LKM/ftrace-hooking.md",
-    "LKM/ftrace.md",
-    "hooks.md",
-    "notrace.md",
     "LKM",
-    "LKM/Detectie van LKM.md",
-    "README.md",
     "eBPF",
     "modules/hide_module.c.md",
     "modules/hiding_directory.c.md",
@@ -210,7 +215,6 @@
     "modules/bpf_hook.c.md",
     "modules",
     "Untitled.canvas",
-    "test/sys_call_table.md",
     "test"
   ]
 }
