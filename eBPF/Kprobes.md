@@ -1,3 +1,0 @@
-"An analysis of offensive capabilities of [[eBPF]] and implementation of a rootkit"
-
-dit is een "tracingtechnologie" waarmee je meetpunten of functies in de kernel kunt plaatsen. Hierdoor kun je deze functies hooken ([[hooks]]). Het verschil met [[Uprobes]] is dat Kprobes dynamisch aan een functie gehookt kunnen worden, in tegenstelling tot Uprobes die op voorhand gehookt moeten worden. Er is wel een lijst van functies die hiervoor niet gebruikt mogen worden; de lijst van functies die aangeroepen kan worden staat in /proc/kallsyms. Het nut van Kprobes is om mee te kijken naar wat het systeem aan het doen is. Dit is bedoeld als een debuggingtool.

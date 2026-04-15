@@ -1,0 +1,1 @@
+Dit is vergelijk met [[Kprobes]] en [[Uprobes]], maar het verschill is dat tracepoints op voorhand(statisch) zijn ingestelt. De maker van de kernel heeft dit hierin gebakken.
