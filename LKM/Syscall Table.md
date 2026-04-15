@@ -1,0 +1,3 @@
+**Directe modificatie van de Syscall Table** Hoewel een LKM frameworks als ftrace kan misbruiken, is een van de meest klassieke methodes van LKM-rootkits (zoals de bekende rootkit _Diamorphine_) om direct de **syscall table (systeemaanroeptabel)** aan te passen. Omdat een LKM direct in de kernel draait, kan het de pointer van de originele kernel-functie in deze tabel letterlijk overschrijven met het adres van de kwaadaardige functie
+
+ebpf_offensive_rootkit_tfg.pdf

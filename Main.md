@@ -9,5 +9,5 @@ Takenlijst:
 - Aan literatuur beginnen
 - Kleine rootkit met LKM en eBPF maken
 - Wat kan ik er allemaal mee doen met singularity?
-Vandaag
-- Schrijf meer over eBPF en ftrace-hooking; kun je dit uitzetten?
+- Geheugenforensisch onderzoek
+
