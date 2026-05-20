@@ -13,12 +13,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "eBPF/Detectie.md",
+                "file": "Falco.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "Detectie"
+              "title": "Falco"
             }
           }
         ]
@@ -185,8 +185,11 @@
   },
   "active": "7e1229313ff36192",
   "lastOpenFiles": [
-    "eBPF/Mitigation van eBPF.md",
+    "setup/setup-aanvaller.sh",
+    "Volatility framework.md",
+    "setup/ebpf-les.md",
     "eBPF/Detectie.md",
+    "eBPF/Mitigation van eBPF.md",
     "eBPF/Testen van Mitigation eBPF.md",
     "eBPF/eBPF.md",
     "setup/Makefile",
@@ -194,7 +197,6 @@
     "setup/lab_setup.md",
     "setup",
     "New folder",
-    "Volatility framework.md",
     "eBPF/TC (Traffic Control).md",
     "Falco.md",
     "Main.md",
@@ -215,8 +217,6 @@
     "eBPF",
     "modules/hide_module.c.md",
     "modules/hiding_directory.c.md",
-    "modules/hiding_stat.c.md",
-    "modules/hiding_tcp.c.md",
     "modules",
     "Untitled.canvas",
     "test"
